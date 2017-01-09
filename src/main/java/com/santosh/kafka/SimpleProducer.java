@@ -15,7 +15,7 @@ public class SimpleProducer {
 		//kafka topic name
 		String topicName="testing";
 		//message to e published
-		String message="Kafka java Client3";
+		String message="Kafka java Client4";
 		//configure the producer
 		Properties configProperties= new Properties();
 		configProperties.put(org.apache.kafka.clients.producer.ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
