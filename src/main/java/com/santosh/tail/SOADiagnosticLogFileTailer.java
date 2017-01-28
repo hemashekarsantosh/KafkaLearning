@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class LogFileTailer implements Runnable{
+public class SOADiagnosticLogFileTailer implements Runnable{
 
 	//interval
 	private long sampleInterval=2000;
@@ -24,7 +24,7 @@ public class LogFileTailer implements Runnable{
 	private boolean tailing = false;
 	
 	
-	public LogFileTailer(long sampleInterval, File logFile) {
+	public SOADiagnosticLogFileTailer(long sampleInterval, File logFile) {
 		super();
 		this.sampleInterval = sampleInterval;
 		this.logFile = logFile;
@@ -81,12 +81,48 @@ public class LogFileTailer implements Runnable{
 				if (fileLength > filePointer) {
 					file.seek(filePointer);
 					String line = null;
-					
+					String newLine="";
+					boolean flag=false;
 					
 					//System.out.println("file.readLine()::"+file.readLine());
 					while (null != (line = file.readLine())) {
-						this.fireNewLogFileLine(line + "\n");
-
+						
+						Matcher m = Pattern.compile("\\[(.*?)\\]").matcher(line);
+						boolean found=m.find();
+						 /*while(m.find()) {
+							 matches.add(m.group());
+						 }*/
+						if(found && line.indexOf("[ERROR]")==-1){
+							if(!newLine.isEmpty() && found){
+								System.out.println("2::"+newLine);
+								this.fireNewLogFileLine(newLine);
+								newLine="";
+							}
+							newLine=line;
+							
+						}else if(!found || !flag){
+							flag=false;
+							if(found && !newLine.isEmpty() && line.indexOf("[ERROR]")!=-1){
+								System.out.println("3::"+newLine);
+								this.fireNewLogFileLine(newLine);
+								flag=true;
+								newLine="";
+							}
+							newLine=newLine+" "+line;
+							continue;
+						}
+						
+						//this.fireNewLogFileLine(newLine + "\n");
+						this.fireNewLogFileLine(newLine);
+						System.out.println("1::"+newLine);
+						newLine="";
+						
+						
+					}
+					if(!newLine.isEmpty()){
+						System.out.println("4::"+newLine);
+						this.fireNewLogFileLine(newLine);
+						newLine="";
 					}
 					//System.out.println("line::"+line);
 					filePointer = file.getFilePointer();

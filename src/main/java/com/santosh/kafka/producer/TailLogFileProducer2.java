@@ -11,7 +11,7 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import com.santosh.tail.LogFileTailer;
 import com.santosh.tail.LogFileTailerListener;
 
-public class TailLogFileProducer implements LogFileTailerListener{
+public class TailLogFileProducer2 implements LogFileTailerListener{
 	
 	private File logFile;
 	private long sampleInterval;
@@ -112,13 +112,13 @@ public class TailLogFileProducer implements LogFileTailerListener{
 	}
 	
 	public static void main(String[] args) {
-		String logFile1="D:/srtwebaccess.log";
-		//String logFile2="D:/ebpmaccess.log";
+		//String logFile1="D:/srtwebaccess.log";
+		String logFile2="D:/ebpmaccess.log";
 		String topicName="srtaccesslog";
 		long sampleInterval=2000;
-		TailLogFileProducer producer=new TailLogFileProducer();
-		producer.startTailing(new File(logFile1), sampleInterval, topicName);
-		//producer.startTailing(new File(logFile2), sampleInterval, topicName);
+		TailLogFileProducer2 producer=new TailLogFileProducer2();
+		//producer.startTailing(new File(logFile1), sampleInterval, topicName);
+		producer.startTailing(new File(logFile2), sampleInterval, topicName);
 		
 		
 

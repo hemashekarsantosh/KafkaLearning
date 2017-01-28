@@ -8,17 +8,18 @@ import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 
+import com.santosh.tail.BShellLogFileTailer;
 import com.santosh.tail.LogFileTailer;
 import com.santosh.tail.LogFileTailerListener;
 
-public class TailLogFileProducer implements LogFileTailerListener{
+public class TailBShellLogFileProducer implements LogFileTailerListener{
 	
 	private File logFile;
 	private long sampleInterval;
 	private String topicName;
 	private Producer<String, String> producer;
 	private Thread tailLogfileThread;
-	private LogFileTailer tailer;
+	private BShellLogFileTailer tailer;
 	
 	
 	
@@ -72,12 +73,12 @@ public class TailLogFileProducer implements LogFileTailerListener{
 	}
 
 
-	public LogFileTailer getTailer() {
+	public BShellLogFileTailer getTailer() {
 		return tailer;
 	}
 
 
-	public void setTailer(LogFileTailer tailer) {
+	public void setTailer(BShellLogFileTailer tailer) {
 		this.tailer = tailer;
 	}
 
@@ -92,7 +93,7 @@ public class TailLogFileProducer implements LogFileTailerListener{
 		configProperties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.ByteArraySerializer");
 		configProperties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer");
 		this.producer=new KafkaProducer<String, String>(configProperties);
-		tailer=new LogFileTailer(sampleInterval, logFile);
+		tailer=new BShellLogFileTailer(sampleInterval, logFile);
 		tailer.addLogFileTailerListener(this);
 		this.tailLogfileThread=new Thread(tailer);
 		this.tailLogfileThread.start();
@@ -112,11 +113,11 @@ public class TailLogFileProducer implements LogFileTailerListener{
 	}
 	
 	public static void main(String[] args) {
-		String logFile1="D:/srtwebaccess.log";
+		String logFile1="D:/baan.log";
 		//String logFile2="D:/ebpmaccess.log";
-		String topicName="srtaccesslog";
+		String topicName="baanshelllog";
 		long sampleInterval=2000;
-		TailLogFileProducer producer=new TailLogFileProducer();
+		TailBShellLogFileProducer producer=new TailBShellLogFileProducer();
 		producer.startTailing(new File(logFile1), sampleInterval, topicName);
 		//producer.startTailing(new File(logFile2), sampleInterval, topicName);
 		
